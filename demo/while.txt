@@ -1,0 +1,4 @@
+WHILE count < 5 DO
+    PRINT count
+    count = count + 1
+END WHILE

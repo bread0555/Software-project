@@ -1,0 +1,4 @@
+list = CREATE_EMPTY_LIST()
+APPEND list, 10
+APPEND list, 20
+PRINT list

@@ -1,0 +1,5 @@
+IF age > 18 AND hasID THEN
+    PRINT "Access granted"
+ELSE
+    PRINT "Access denied"
+END IF

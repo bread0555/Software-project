@@ -1,0 +1,3 @@
+REPEAT
+    input = GET_INPUT()
+UNTIL input == "exit"

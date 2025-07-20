@@ -1,0 +1,5 @@
+IF x > 10 THEN
+    PRINT "Greater than 10"
+ELSE
+    PRINT "10 or less"
+END IF

@@ -1,0 +1,4 @@
+FUNCTION Add(a, b)
+    result = a + b
+    RETURN result
+END FUNCTION

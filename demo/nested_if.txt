@@ -1,0 +1,9 @@
+IF score >= 90 THEN
+    PRINT "A"
+ELSE
+    IF score >= 80 THEN
+        PRINT "B"
+    ELSE
+        PRINT "C or lower"
+    END IF
+END IF
