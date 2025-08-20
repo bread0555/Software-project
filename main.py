@@ -8,7 +8,7 @@ with open("demo/if_else.txt") as f:
 class CodeBlock:
   def __init__(self, input, indent_level = 0):
     self.input = input
-    self.output = output
+    self.output = []
     self.indent_level = indent_level
 
   def analyse(self)):
@@ -29,6 +29,37 @@ class CodeBlock:
       pass
     if self.variable_name == "while":
       CodeBlock(self.input) # recurrsively create new classes to solve the problem of code idented far inside
+
+
+  # Control structures that will call the class again
+  # Find a way to determine where the block ends, and pass it through into the class
+  # Add multiway selection and post-test iteration
+  def function_struc(self):
+    pass
+
+  def if_struc(self):
+    pass
+    # find out way to seperate if, elif, and else statements
+
+  def while_struc(self):
+    pass
+
+  def for_struc(self):
+    pass
+    # manage the two different for loop structures
+
+  def try_struc(self):
+    pass
+
+  # Sequential statements
+  def assignment(self):
+    pass
+
+  def function_call(self):
+    pass
+
+  def comment(self):
+    pass
 
 
 c = CodeBlock(lines)
