@@ -10,19 +10,33 @@ class CodeBlock:
     self.input = input
     self.output = []
     self.indent_level = indent_level
+    self.avoid_keywords = ["elif", "else", "except"]
 
   def analyse(self):
-    if self.input[0].startswith(" " + " " * self.indent_level):
-      return
-    else:
-      self.name = self.input[0].strip(" ")
-      return
-      
-    # analyse the line given, storesthe first word in a variable
+    line = 0
+    block = []
+    start = None
+    while line < len(self.input):
+      if self.input[line].startswith(" " * self.indent_level) and not self.input[line].startswith(" " * (self.indent_level + 1)):
+        # add code that deals with sequential statements
+        # a bunch of if statements
+        # add to output
+        line += 1
+        start = line
+      else:
+        # deals with control structures
+        while line > len(self.input) and not self.input[line].startswith(" " * self.indent_level) and  self.input[line].split(" ")[0] not in self.avoid_keywords:
+          line += 1
+        end = line
+        block = self.input[start:end]
+        codeblock = CodeBlock(block, self.indent_level + 1)
+        codeblock.analyse()
+        self.output += codeblock.output
+
 
   def to_python(self):
     # Different block types: FUNCTION, IF, WHILE, FOR, TRY, assignment, function call, comment
-
+    
   
 
     # need something to check how long the indent goes for, and send in the input into the recursive input
