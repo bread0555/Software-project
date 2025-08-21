@@ -11,9 +11,9 @@ class CodeBlock:
     self.output = []
     self.indent_level = indent_level
 
-  def analyse(self)):
+  def analyse(self):
     if self.input[0].startswith(" " + " " * self.indent_level):
-      
+      return
     else:
       self.name = self.input[0].strip(" ")
       return
@@ -21,6 +21,9 @@ class CodeBlock:
     # analyse the line given, storesthe first word in a variable
 
   def to_python(self):
+    # Different block types: FUNCTION, IF, WHILE, FOR, TRY, assignment, function call, comment
+
+  
 
     # need something to check how long the indent goes for, and send in the input into the recursive input
     if self.block_type == "IF":
@@ -60,6 +63,8 @@ class CodeBlock:
 
   def comment(self):
     pass
+
+  # Function to 
 
 
 c = CodeBlock(lines)
