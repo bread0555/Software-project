@@ -62,6 +62,10 @@ class CodeBlock:
             return self.if_constructor(i_p)
         if constructor == "TRY":
             return self.try_constructor(i_p)
+        if constructor == "WHILE":
+            return self.while_constructor(i_p)
+        if constructor == "FOR":
+            return self.for_constructor(i_p)
 
     def if_constructor(self, i_p):
         o_p = []
@@ -140,32 +144,90 @@ class CodeBlock:
         return o_p
 
 
-blended_demo = [
-    "TRY",
-    "    OPEN file 'data.txt'",
-    "    READ contents",
-    "    IF score >= 90 THEN",
-    "        PRINT 'Grade: A'",
-    "    ELSE IF score >= 80 THEN",
-    "        PRINT 'Grade: B'",
-    "    ELSE",
-    "        PRINT 'Grade: C'",
-    "    END IF",
-    "EXCEPT FileNotFoundError",
-    "    PRINT 'File not found.'",
-    "EXCEPT PermissionError",
-    "    PRINT 'Permission denied.'",
-    "ELSE",
-    "    PRINT 'File read successfully.'",
-    "FINALLY",
-    "    CLOSE file",
-    "END TRY"
+    def while_constructor(self, i_p):
+        o_p = []
+        i = 0
+        while i < len(i_p):
+            if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                constructor = i_p[i].upper().split()[0]
+                line = i_p[i].split()
+                if constructor == "WHILE":
+                    o_p.append(self.indent * self.indent_lvl + "while " + " ".join(line[1:]) + ":")
+                elif constructor == "END":
+                    pass
+                else:
+                    line = [" ".join(line)]
+                    c = CodeBlock(line)
+                    c.analyse()
+                    o_p += c.o_p
+                i += 1
+            else:
+                start = i
+                while i < len(i_p):
+                    if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                        end = i
+                        break
+                    i += 1
+                c = CodeBlock(i_p[start:end])
+                c.analyse()
+                o_p += c.o_p
+        return o_p
+
+    def for_constructor(self, i_p):
+        # needs to distinguish between min, max, step (will use TO and STEP))
+        # if iterating through list, will use in
+        o_p = []
+        i = 0
+        while i < len(i_p):
+            if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                constructor = i_p[i].upper().split()[0]
+                line = i_p[i].split()
+                if constructor == "FOR":
+                    o_p.append(self.indent * self.indent_lvl + "for " + " ".join(line[1:]) + ":")
+                elif constructor == "END":
+                    pass
+                else:
+                    line = [" ".join(line)]
+                    c = CodeBlock(line)
+                    c.analyse()
+                    o_p += c.o_p
+                i += 1
+            else:
+                start = i
+                while i < len(i_p):
+                    if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                        end = i
+                        break
+                    i += 1
+                c = CodeBlock(i_p[start:end])
+                c.analyse()
+                o_p += c.o_p
+        return o_p
+
+    def case_constructor(self, i_p):
+        pass
+
+simple_for = [
+    "FOR i = 1 TO 5",
+    "    PRINT i",
+    "END FOR"
 ]
 
 
 
 
-
-c = CodeBlock(blended_demo)
+c = CodeBlock(simple_for)
 c.analyse()
 print(c.o_p)
+
+
+# use to put back in the indented code into the thingy
+# start = i
+# while i < len(i_p):
+#     if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+#         end = i
+#         break
+#     i += 1
+# c = CodeBlock(i_p[start:end])
+# c.analyse()
+# o_p += c.o_p
