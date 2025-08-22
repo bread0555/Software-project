@@ -45,10 +45,9 @@ class CodeBlock:
                 start = i
                 constructor = self.i_p[i].upper().split()[0]
                 while i < len(self.i_p):
-                    print(self.indent_lvl)
-                    print(self.i_p[i])
                     if (
                         self.i_p[i].startswith(self.indent * self.indent_lvl)
+                        and not self.i_p[i].startswith(self.indent * (self.indent_lvl + 1))
                         and self.i_p[i].upper().split() == ["END", constructor]
                     ):
                         end = i
@@ -66,37 +65,57 @@ class CodeBlock:
         o_p = []
         i = 0
         while i < len(i_p):
-            constructor = i_p[i].upper().split()[0]
-            if constructor == "IF" or constructor == "ELIF":
-                line = i_p[i].split()
-                for j in range(len(line)):
-                    if line[j] == "AND":
-                        line[j] = "and"
-                    if line[j] == "OR":
-                        line[j] = "or"
-            if constructor == "END":
-                break
-            elif constructor == "IF":
-                o_p.append(self.indent * self.indent_lvl + "if " + " ".join(line[1:-1]) + ":")
-            elif constructor == "ELIF":
-                o_p.append(self.indent * self.indent_lvl + "elif " + " ".join(line[1:-1]) + ":")
-            elif constructor == "ELSE":
-                o_p.append(self.indent * self.indent_lvl + "else:")
+            if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                constructor = i_p[i].upper().split()[:2]
+                if constructor[0] == "IF" or constructor[0] == "ELSE":
+                    line = i_p[i].split()
+                    for j in range(len(line)):
+                        if line[j] == "AND":
+                            line[j] = "and"
+                        if line[j] == "OR":
+                            line[j] = "or"
+                        if line[j] == "THEN":
+                            line[j] = ":"
+                if constructor[0] == "END" and constructor[1] == "IF":
+                    pass
+                elif constructor[0] == "IF":
+                    o_p.append(self.indent * self.indent_lvl + "if " + " ".join(line[1:]))
+                elif constructor[0] == "ELSE" and len(constructor) == 1:
+                    o_p.append(self.indent * self.indent_lvl + "else:")
+                elif constructor[0] == "ELSE" and constructor[1] == "IF":
+                    o_p.append(self.indent * self.indent_lvl + "elif " + " ".join(line[2:]))
+                else:
+                    line = [" ".join(line)]
+                    c = CodeBlock(line)
+                    c.analyse()
+                    o_p += c.o_p
+                i += 1
             else:
                 start = i
                 while i < len(i_p):
-                    if (
-                        i_p[i].startswith(self.indent * self.indent_lvl)
-                        and not i_p[i].startswith(self.indent * (self.indent_lvl + 1))
-                    ):
+                    if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
                         end = i
                         break
                     i += 1
-                c = CodeBlock(i_p[start:end+1])
+                c = CodeBlock(i_p[start:end])
                 c.analyse()
                 o_p += c.o_p
-            i += 1
         return o_p
+
+pseudocode = [
+    "IF age >= 18 THEN",
+    "    IF has_permission THEN",
+    "        PRINT 'Access granted.'",
+    "    ELSE",
+    "        PRINT 'Permission required.'",
+    "    END IF",
+    "ELSE IF age >= 13 THEN",
+    "    PRINT 'Access limited for teenagers.'",
+    "ELSE",
+    "    PRINT 'Access denied for children.'",
+    "END IF"
+]
+
 
 a = [
     "IF mode == 'admin' THEN",
@@ -115,6 +134,31 @@ a = [
     "PRINT 'Initial checks complete.'"
 ]
 
-c = CodeBlock(a)
+test_pseudocode = [
+    "IF score >= 90 THEN",
+    "    PRINT 'Grade: A'",
+    "ELSE IF score >= 80 THEN",
+    "    PRINT 'Grade: B'",
+    "ELSE IF score >= 70 THEN",
+    "    PRINT 'Grade: C'",
+    "ELSE",
+    "    PRINT 'Grade: F'",
+    "END IF",
+
+    "IF attendance < 75 THEN",
+    "    PRINT 'Attendance warning'",
+    "END IF",
+
+    "IF has_scholarship THEN",
+    "    IF gpa >= 3.5 THEN",
+    "        PRINT 'Scholarship maintained'",
+    "    ELSE",
+    "        PRINT 'Scholarship revoked'",
+    "    END IF",
+    "END IF"
+]
+
+
+c = CodeBlock(test_pseudocode)
 c.analyse()
 print(c.o_p)
