@@ -2,7 +2,7 @@ class CodeBlock:
     def __init__(self, i_p):
         self.i_p = i_p
         self.o_p = []
-        self.keywords = ["IF", "WHILE", "FOR", "TRY"]
+        self.keywords = ["IF", "WHILE", "FOR", "TRY", "CASE", "REPEAT"]
 
     def tab_to_spaces(self):
         for i in range(len(self.i_p)):
@@ -48,7 +48,8 @@ class CodeBlock:
                     if (
                         self.i_p[i].startswith(self.indent * self.indent_lvl)
                         and not self.i_p[i].startswith(self.indent * (self.indent_lvl + 1))
-                        and self.i_p[i].upper().split() == ["END", constructor]
+                        and (self.i_p[i].upper().split() == ["END", constructor]
+                             or self.i_p[i].upper().split()[0] == "UNTIL")
                     ):
                         end = i
                         break
@@ -66,6 +67,10 @@ class CodeBlock:
             return self.while_constructor(i_p)
         if constructor == "FOR":
             return self.for_constructor(i_p)
+        if constructor == "CASE":
+            return self.case_constructor(i_p)
+        if constructor == "REPEAT":
+            return self.repeat_constructor(i_p)
 
     def if_constructor(self, i_p):
         o_p = []
@@ -174,8 +179,8 @@ class CodeBlock:
         return o_p
 
     def for_constructor(self, i_p):
-        # needs to distinguish between min, max, step (will use TO and STEP))
-        # if iterating through list, will use in
+        # needs to distinguish between "min, max, step" (will use TO and STEP))
+        # if iterating through list, will use "in"
         o_p = []
         i = 0
         while i < len(i_p):
@@ -183,6 +188,7 @@ class CodeBlock:
                 constructor = i_p[i].upper().split()[0]
                 line = i_p[i].split()
                 if constructor == "FOR":
+                    # more logic needed here to build the for loop
                     o_p.append(self.indent * self.indent_lvl + "for " + " ".join(line[1:]) + ":")
                 elif constructor == "END":
                     pass
@@ -207,16 +213,50 @@ class CodeBlock:
     def case_constructor(self, i_p):
         pass
 
-simple_for = [
-    "FOR i = 1 TO 5",
-    "    PRINT i",
-    "END FOR"
+    def repeat_constructor(self, i_p):
+        o_p = []
+        i = 0
+        while i < len(i_p):
+            if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                constructor = i_p[i].upper().split()[0]
+                line = i_p[i].split()
+                if constructor == "REPEAT":
+                    o_p.append(self.indent * self.indent_lvl + "while True:")
+                elif constructor == "UNTIL":
+                    o_p.append(self.indent * (self.indent_lvl + 1) + "if " + " ".join(line[1:]) + ":")
+                    o_p.append(self.indent * (self.indent_lvl + 2) + "break")
+                else:
+                    line = [" ".join(line)]
+                    c = CodeBlock(line)
+                    c.analyse()
+                    o_p += c.o_p
+                i += 1
+            else:
+                start = i
+                while i < len(i_p):
+                    if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
+                        end = i
+                        break
+                    i += 1
+                c = CodeBlock(i_p[start:end])
+                c.analyse()
+                o_p += c.o_p
+        return o_p
+
+
+a = [
+    'REPEAT',
+    '    PRINT "Enter your password:"',
+    '    INPUT password',
+    '    PRINT "Checking password..."',
+    '    IF password == "hint" THEN',
+    '        PRINT "That was a hint, not the actual password."',
+    '    END IF',
+    'UNTIL password == "secret"'
 ]
 
 
-
-
-c = CodeBlock(simple_for)
+c = CodeBlock(a)
 c.analyse()
 print(c.o_p)
 
