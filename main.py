@@ -1,17 +1,13 @@
-lines = []
-with open("demo/if_else.txt") as f:
-    for line in f:
-        lines.append(line.strip("\n"))
-
 class CodeBlock:
     def __init__(self, i_p):
         self.i_p = i_p
         self.o_p = []
+        self.keywords = ["IF", "WHILE", "FOR", "TRY"]
 
     def tab_to_spaces(self):
         for i in range(len(self.i_p)):
-            if "\t" in lines[i]:
-                lines[i] = lines[i].replace("\t", "    ")
+            if "\t" in self.i_p[i]:
+                self.i_p[i] = self.i_p[i].replace("\t", "    ")
 
     def check_indents(self):
         if not self.i_p:
@@ -29,63 +25,94 @@ class CodeBlock:
                 x = temp
             hcf = x
         self.indent = hcf
-        self.indent_lvl = (len(self.i_p[0]) - len(self.i_p[0].lstrip(" "))) / self.indent
+        self.indent_lvl = (len(self.i_p[0]) - len(self.i_p[0].lstrip(" "))) // self.indent
         self.indent = " " * self.indent
 
     def analyse(self):
         self.tab_to_spaces()
         self.check_indents()
         i = 0
+        self.i_p[:] = [line for line in self.i_p if line.strip()]
         while i < len(self.i_p):
-            if (self.i_p[i].startswith(self.indent * self.indent_lvl) 
+            if (
+                self.i_p[i].startswith(self.indent * self.indent_lvl)
                 and not self.i_p[i].startswith(self.indent * (self.indent_lvl + 1))
-               ):
-                
+                and self.i_p[i].upper().split()[0] not in self.keywords
+            ):
+                self.o_p.append(self.i_p[i])
                 i += 1
             else:
-                start = i - 1
-                ctrl_type = self.i_p[i - 1].strip().split(" ")[0].upper()
+                start = i
+                constructor = self.i_p[i].upper().split()[0]
                 while i < len(self.i_p):
-                    if self.i_p[i].split(" ")[0].strip().upper() == f"{self.indent * self.indent_lvl}END {ctrl_type}":
+                    if (
+                        self.i_p[i].startswith(self.indent * self.indent_lvl)
+                        and self.i_p[i].upper().split() == ["END", constructor]
+                    ):
+                        end = i
                         break
                     i += 1
-                end = i
-                code_block = self.i_p[start:end]
- 
-            
-                # mark the line that the first control structure starts (i - 1)
-                # find when the control structure block ends
-                # depending on the first word of the line, pass the block into the appropriate method
-                
+                self.o_p += self.translator(constructor, self.i_p[start:end + 1])
+                i += 1
             
 
+    def translator(self, constructor, i_p):
+        if constructor == "IF":
+            return self.if_constructor(i_p)
 
-  def analyse(self):
-    line = 0
-    start = None
-    self.check_indent_level()
-    while line < len(self.input):
-      if (
-        self.input[line].startswith(" " * self.indent_level) 
-        and not self.input[line].startswith(" " * (self.indent_level + 1))
-      ):
-        # add code that deals with sequential statements
-        # a bunch of if statements
-        # add to output
-        line += 1
-      else:
-        if not start:
-          start = line
-        control_type = self.input[line].split(" ")[0].upper()
-        # deals with control structures
-        while (
-          line < len(self.input) 
-          and not self.input[line].startswith(" " * self.indent_level) 
-          and self.input[line].upper().split(" ")[0] not in self.avoid_keywords
-        ):
-          line += 1
-        end = line
-        code_block = self.input[start:end]
-        self.output += self.pseudocode_to_python(code_block, control_type)
-        line += 1
-            
+    def if_constructor(self, i_p):
+        o_p = []
+        i = 0
+        while i < len(i_p):
+            constructor = i_p[i].upper().split()[0]
+            if constructor == "IF" or constructor == "ELIF":
+                line = i_p[i].split()
+                for j in range(len(line)):
+                    if line[j] == "AND":
+                        line[j] = "and"
+                    if line[j] == "OR":
+                        line[j] = "or"
+            if constructor == "END":
+                break
+            elif constructor == "IF":
+                o_p.append(self.indent * self.indent_lvl + "if " + " ".join(line[1:-1]) + ":")
+            elif constructor == "ELIF":
+                o_p.append(self.indent * self.indent_lvl + "elif " + " ".join(line[1:-1]) + ":")
+            elif constructor == "ELSE":
+                o_p.append(self.indent * self.indent_lvl + "else:")
+            else:
+                start = i
+                while i < len(i_p):
+                    if (
+                        i_p[i].startswith(self.indent * self.indent_lvl)
+                        and not i_p[i].startswith(self.indent * (self.indent_lvl + 1))
+                    ):
+                        end = i
+                        break
+                    i += 1
+                c = CodeBlock(i_p[start:end+1])
+                c.analyse()
+                o_p += c.o_p
+            i += 1
+        return o_p
+
+a = [
+    "IF mode == 'admin' THEN",
+    "    PRINT 'Admin access granted.'",
+    "    enable_admin_panel()",
+    "END IF",
+
+    "IF user_age < 18 THEN",
+    "    PRINT 'Access to restricted content denied.'",
+    "END IF",
+
+    "IF is_logged_in == FALSE THEN",
+    "    PRINT 'Please log in to continue.'",
+    "END IF",
+
+    "PRINT 'Initial checks complete.'"
+]
+
+c = CodeBlock(a)
+c.analyse()
+print(c.o_p)
