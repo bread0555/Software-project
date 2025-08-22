@@ -45,6 +45,8 @@ class CodeBlock:
                 start = i
                 constructor = self.i_p[i].upper().split()[0]
                 while i < len(self.i_p):
+                    print(self.indent_lvl)
+                    print(self.i_p[i])
                     if (
                         self.i_p[i].startswith(self.indent * self.indent_lvl)
                         and self.i_p[i].upper().split() == ["END", constructor]
