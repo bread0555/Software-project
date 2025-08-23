@@ -3,9 +3,6 @@ class CodeBlock:
     def __init__(self, i_p):
         self.i_p = i_p
         self.o_p = []
-        self.keywords = [
-            "IF", "WHILE", "FOR", "TRY", "CASE", "REPEAT", "FUNCTION", "CASEWHERE"
-        ]
 
     def tab_to_spaces(self):
         for i in range(len(self.i_p)):
@@ -48,8 +45,8 @@ class CodeBlock:
             if (self.i_p[i].startswith(self.indent * self.indent_lvl)
                     and not self.i_p[i].startswith(self.indent *
                                                    (self.indent_lvl + 1))
-                    and self.i_p[i].upper().split()[0] not in self.keywords):
-                self.o_p.append(self.i_p[i])
+                    and self.i_p[i].upper().split()[0] not in ["IF", "WHILE", "FOR", "TRY", "CASE", "REPEAT", "FUNCTION", "CASEWHERE"]):
+                self.o_p += self.process_sequential_line(self.i_p[i])
                 i += 1
             else:
                 start = i
@@ -68,23 +65,23 @@ class CodeBlock:
                 self.o_p += self.translator(constructor, self.i_p[start:end + 1])
                 i += 1
 
-    def translator(self, constructor, i_p):
+    def process_control_block(self, constructor, i_p):
         if constructor == "IF":
-            return self.if_constructor(i_p)
+            return self.transalte_if(i_p)
         elif constructor == "TRY":
-            return self.try_constructor(i_p)
+            return self.translate_try(i_p)
         elif constructor == "WHILE":
-            return self.while_constructor(i_p)
+            return self.translate_which(i_p)
         elif constructor == "FOR":
-            return self.for_constructor(i_p)
+            return self.translate_for(i_p)
         elif constructor == "CASEWHERE":
-            return self.casewhere_constructor(i_p)
+            return self.translate_casewhere(i_p)
         elif constructor == "REPEAT":
-            return self.repeat_constructor(i_p)
+            return self.translate_repeat(i_p)
         elif constructor == "FUNCTION":
-            return self.function_constructor(i_p)
+            return self.translate_function(i_p)
 
-    def if_constructor(self, i_p):
+    def transalte_if(self, i_p):
         o_p = []
         i = 0
         while i < len(i_p):
@@ -127,7 +124,7 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def try_constructor(self, i_p):
+    def translate_try(self, i_p):
         o_p = []
         i = 0
         while i < len(i_p):
@@ -164,7 +161,7 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def while_constructor(self, i_p):
+    def translate_which(self, i_p):
         o_p = []
         i = 0
         while i < len(i_p):
@@ -195,7 +192,7 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def for_constructor(self, i_p):
+    def translate_for(self, i_p):
         o_p = []
         i = 0
         while i < len(i_p):
@@ -246,10 +243,10 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def casewhere_constructor(self, i_p):
+    def translate_casewhere(self, i_p):
         o_p = []
         i = 0
-        comparative_operators = ["<", ">", "<=", ">=", "==", "!="]
+        comparative_ops = ["<", ">", "<=", ">=", "==", "!="]
         while i < len(i_p):
             if not i_p[i].startswith(self.indent * (self.indent_lvl + 1)):
                 constructor = i_p[i].upper().split()[0]
@@ -267,7 +264,7 @@ class CodeBlock:
                     line[0] = line[0].split("TO")
                     line[0] = [seq.strip() for seq in line[0]]
                     o_p.append(self.indent * self.indent_lvl + selector + line[0][0] + " <= " + variable + " <= " + line[0][1] + ":")
-                elif any(operator in line[0] for operator in comparative_operators):
+                elif any(operator in line[0] for operator in comparative_ops):
                     o_p.append(self.indent * self.indent_lvl + selector + variable + line[0] + ":")
                 elif "OTHERWISE" in line[0]:
                     o_p.append(self.indent * self.indent_lvl + "else:")
@@ -290,7 +287,7 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def repeat_constructor(self, i_p):
+    def translate_repeat(self, i_p):
         o_p = []
         i = 0
         while i < len(i_p):
@@ -320,7 +317,7 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def function_constructor(self, i_p):
+    def translate_function(self, i_p):
         o_p = []
         i = 0
         while i < len(i_p):
@@ -349,18 +346,11 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-
-case_demo = [
-    "CASEWHERE score IS",
-    "    90 TO 100: grade = \"A\"",
-    "    80 TO 89:  grade = \"B\"",
-    "    < 80:      grade = \"F\"",
-    "END CASEWHERE"
-]
+    def process_sequential_line(self, i_p):
+        
+        
 
 
-
-
-c = CodeBlock(case_demo)
+c = CodeBlock(code)
 c.analyse()
 print(c.o_p)
