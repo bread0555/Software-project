@@ -46,7 +46,8 @@ class CodeBlock:
                     and not self.i_p[i].startswith(self.indent *
                                                    (self.indent_lvl + 1))
                     and self.i_p[i].upper().split()[0] not in ["IF", "WHILE", "FOR", "TRY", "CASE", "REPEAT", "FUNCTION", "CASEWHERE"]):
-                self.o_p += self.process_sequential_line(self.i_p[i])
+                action = self.i_p[i].upper().split()[0]
+                self.o_p.append(self.process_sequential_line(action, self.i_p[i]))
                 i += 1
             else:
                 start = i
@@ -62,7 +63,7 @@ class CodeBlock:
                         end = i
                         break
                     i += 1
-                self.o_p += self.translator(constructor, self.i_p[start:end + 1])
+                self.o_p += self.process_control_block(constructor, self.i_p[start:end + 1])
                 i += 1
 
     def process_control_block(self, constructor, i_p):
@@ -95,6 +96,10 @@ class CodeBlock:
                         line[j] = "or"
                     if line[j] == "THEN":
                         line[j] = ":"
+                    if line[j] == "NOT":
+                        line[j] = "not"
+                    if line[j] == "=":
+                        line[j] = "=="
                 if constructor == "IF":
                     o_p.append(self.indent * self.indent_lvl + "if " +
                                " ".join(line[1:]))
@@ -205,7 +210,7 @@ class CodeBlock:
                         line = line.split("IN")
                         line = [seq.strip() for seq in line]
                         o_p.append(self.indent * self.indent_lvl + "for " +
-                                   line[0] + "in" + line[1] + ":")
+                                   line[0] + " in " + line[1] + ":")
                     elif "TO" in line:
                         line = line.split("TO")
                         line = [seq.strip() for seq in line]
@@ -346,11 +351,95 @@ class CodeBlock:
                 o_p += c.o_p
         return o_p
 
-    def process_sequential_line(self, i_p):
-        
-        
+    def process_sequential_line(self, action, i_p):
+        if action == "PRINT":
+            return self.translate_print(i_p)
+        elif action == "INPUT":
+            return self.translate_input(i_p)
+        elif action == "SET":
+            return self.translate_set(i_p)
+        elif action == "CALL":
+            return self.translate_call(i_p)
+        elif action == "APPEND":
+            return self.translate_append(i_p)
+        elif action in ["BREAK", "CONTINUE", "PASS", "RETURN"]:
+            return self.translate_control(i_p, action)
+        else:
+            return i_p
+
+    def translate_print(self, i_p):
+        operand = " ".join(i_p.split()[1:])
+        o_p = self.indent * self.indent_lvl + "print(" + operand + ")"
+        return o_p
+
+    def translate_input(self, i_p):
+        pseudo_python_eqv = {
+            "INTEGER": "int",
+            "FLOAT": "float",
+            "STRING": "str",
+            "BOOLEAN": "bool",
+        }
+        variable = i_p.split()[-1]
+        operand = " ".join(i_p.split()[1:-1])
+        if "'" in operand:
+            operand = operand.split("'")
+        elif '"' in operand:
+            operand = operand.split('"')
+        else:
+            operand = [operand]
+        operand = [seq.strip() for seq in operand if seq.strip()]
+        if len(operand) == 0:
+            o_p = self.indent * self.indent_lvl + variable + " = input()"
+        elif len(operand) == 1:
+            if "AS" in operand[0]:
+                data_type = operand[0].split("AS")[1].strip()
+                o_p = self.indent * self.indent_lvl + variable + " = " + pseudo_python_eqv[data_type] + "(input())"
+            else:
+                o_p = self.indent * self.indent_lvl + variable + " = input('" + operand[0] + "')"
+        elif len(operand) == 2:
+            data_type = operand[1].split("AS")[1].strip()
+            o_p = self.indent * self.indent_lvl + variable + " = " + pseudo_python_eqv[data_type] + "(input('" + operand[0] + "'))"
+        return o_p
+
+    def translate_set(self, i_p):
+        operand = " ".join(i_p.split()[1:])
+        o_p = self.indent * self.indent_lvl + operand
+        return o_p
+
+    def translate_call(self, i_p):
+        operand = " ".join(i_p.split()[1:])
+        o_p = self.indent * self.indent_lvl + operand
+        return o_p
+
+    def translate_append(self, i_p):
+        operand = " ".join(i_p.split()[1:])
+        operand = operand.split("TO")
+        operand = [seq.strip() for seq in operand]
+        o_p = self.indent * self.indent_lvl + operand[1] + ".append(" + operand[0] + ")"
+        return o_p
+
+    def translate_control(self, i_p, action):
+        if action == "BREAK":
+            o_p = self.indent * self.indent_lvl + "break"
+        elif action == "CONTINUE":
+            o_p = self.indent * self.indent_lvl + "continue"
+        elif action == "PASS":
+            o_p = self.indent * self.indent_lvl + "pass"
+        elif action == "RETURN":
+            if len(i_p.split()) > 1:
+                operand = " ".join(i_p.split()[1:])
+                o_p = self.indent * self.indent_lvl + "return " + operand
+            else:
+                o_p = self.indent * self.indent_lvl + "return"
+        return o_p
 
 
-c = CodeBlock(code)
+pseudocode_lines = [
+    "FOR i = 1 TO 3",
+    "    PRINT 'Hello'",
+    "END FOR"
+]
+
+c = CodeBlock(pseudocode_lines)
 c.analyse()
 print(c.o_p)
