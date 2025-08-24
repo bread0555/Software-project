@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Translator: Rules</title>
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+    <h1>Pseudocode Rules</h1>
+    <h3>Control Structures</h3>
+    <h5>IF, ELSE IF, ELSE</h5>
+    <pre>IF condition THEN
+    // code to execute if condition is true
+ELSE IF another_condition THEN
+    // code to execute if another_condition is true
+ELSE
+    // code to execute if none of the above conditions are true</pre>
+    <h5>TRY, EXCEPT, ELSE, FINALLY</h5>
+    <pre>TRY
+    // code that may raise an exception
+EXCEPT ExceptionType AS e
+    // code to handle the exception
+ELSE
+    // code to execute if no exceptions were raised
+FINALLY
+    // code that will always execute, regardless of exceptions
+END TRY</pre>
+    <h5>WHILE</h5>
+    <pre>WHILE condition
+    // code to execute while condition is true
+END WHILE</pre>
+    <h5>FOR</h5>
+    <pre>FOR variable = start_value TO end_value STEP step_value
+    // code to execute for each value of variable
+END FOR</pre>
+<pre>FOR variable IN collection
+    // code to execute for each item in the collection
+END FOR
+</pre>
+    <h5>CASEWHERE</h5>
+    <pre>CASEWHERE variable IS
+    value1: // code to execute if variable equals value1
+    > value2: // code to execute if variable is greater than value2
+    < value3: // code to execute if variable is less than value3
+    >= value4: // code to execute if variable is greater than or equal to value4
+    <= value5: // code to execute if variable is less than or equal to value5
+    == value6: // code to execute if variable equals value6
+    != value7: // code to execute if variable does not equal value7
+    value8 TO value9: // code to execute if variable is between value8 and value9 (inclusive)
+    OTHERWISE:   // code to execute if variable does not match any cases
+END CASEWHERE</pre>
+    <h5>REPEAT</h5>
+    <pre>REPEAT
+    // code to execute
+UNTIL condition</pre>
+    <h5>FUNCTION</h5>
+    <pre>FUNCTION function_name(parameter1, parameter2)
+    // code to execute when the function is called
+END FUNCTION</pre>
+    <h3>Sequential Statements</h3>
+    <h5>PRINT</h5>
+    <pre>PRINT "Hello, World!"</pre>
+    <h5>INPUT</h5>
+    <pre>INPUT "prompt message" AS data_type variable_name</pre>
+    <h5>SET</h5>
+    <pre>SET variable_name = expression</pre>
+    <h5>CALL</h5>
+    <pre>CALL function_name(argument1, argument2)</pre>
+    <h5>APPEND</h5>
+    <pre>APPEND value TO list_name</pre>
+    <h5>BREAK, CONTINUE, PASS, RETURN</h5>
+    <pre>BREAK
+CONTINUE
+PASS
+RETURN expression</pre>
+    <a href="{{ url_for('index') }}" style="text-decoration: none;">
+        <button class="button">Home</button>
+    </a>
+</body>
+</html>
