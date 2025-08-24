@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
+    <button class="button" onclick="window.location.href='{{ url_for('index') }}'">Back</button>
     <h1>Pseudocode Rules</h1>
     <h3>Control Structures</h3>
     <h5>IF, ELSE IF, ELSE</h5>
@@ -74,8 +75,7 @@ END FUNCTION</pre>
 CONTINUE
 PASS
 RETURN expression</pre>
-    <a href="{{ url_for('index') }}" style="text-decoration: none;">
-        <button class="button">Home</button>
-    </a>
+    <h3>Anything else will stay unmodifed</h3>
+    <button class="button" onclick="window.location.href='{{ url_for('index') }}'">Back</button>
 </body>
 </html>

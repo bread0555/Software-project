@@ -17,7 +17,7 @@
             }
         });
     </script>
-    <title>Code Converter</title>
+    <title>P2P Translater: Home</title>
     <style>
         input[type="submit"] {
             font-size: 16px;
@@ -36,14 +36,17 @@
             placeholder="Enter pseudocode here">{{ pseudocode_input }}</textarea>
     </form>
 
-    <input 
-        type="submit" 
-        form="converter-form" 
-        class="button" 
-        id="submit-button" 
-        value="Submit" 
-        style="margin-left:auto;"
-    >
+    <div style="display: flex;">
+        <button class="button" onclick="window.location.href='{{ url_for('rules') }}'">Rules</button>
+        <input 
+            type="submit" 
+            form="converter-form" 
+            class="button" 
+            id="submit-button" 
+            value="Submit" 
+            style="margin-left:auto;"
+        >
+    </div>
 
     {% if python_output %}
         <h3>Output</h3>
@@ -54,8 +57,5 @@
             readonly>{{ python_output }}</textarea>
     {% endif %}
 
-    <a href="{{ url_for('rules') }}" style="text-decoration: none;">
-        <button class="button">Rules</button>
-    </a>
 </body>
 </html>

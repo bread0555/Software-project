@@ -17,7 +17,7 @@ body {
     color: #222;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     line-height: 1.2;
 }
@@ -25,6 +25,9 @@ h1, h2, h3 {
 h1 { font-size: 3rem; }
 h2 { font-size: 2.5rem; }
 h3 { font-size: 2.2rem; }
+h4 { font-size: 1.8rem; }
+h5 { font-size: 1.5rem; }
+h6 { font-size: 1.2rem; }
 
 textarea {
     font-family: ui-monospace, monospace;
@@ -59,4 +62,12 @@ textarea {
 a {
     text-decoration: none;
     color: inherit;
+}
+
+pre {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1rem;
+    font-family: monospace;
+    overflow-x: auto;
 }
