@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css" />
+    <script>
+        function validateField(field) {
+            if (field.value.length === 0) {
+                alert("Please enter data in the " + field.name + " field");
+            }
+        }
+        document.addEventListener("keydown", function(event) {
+            if (event.metaKey && event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("submit-button").click();
+            }
+        });
+    </script>
     <title>Code Converter</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
         input[type="submit"] {
             font-size: 16px;
             padding: 5px 10px;
@@ -19,14 +27,35 @@
 </head>
 <body>
     <h1>Pseudocode to Python</h1>
-    <form method="POST">
-        <textarea id="input_box" name="i_p" placeholder="Enter pseudocode here" rows="10" cols="50">{{ i_p }}</textarea>
-        <input type="submit" value="Submit">
+    <h3>Input</h3>
+
+    <form id="converter-form" onsubmit="validateField(this.pseudocode_input)" method="POST">
+        <textarea 
+            id="pseudocode-textarea" 
+            name="pseudocode_input" 
+            placeholder="Enter pseudocode here">{{ pseudocode_input }}</textarea>
     </form>
 
-    {% if o_p %}
-        <h2>Converted pseudocode:</h2>
-        <pre>{{ o_p }}</pre>
+    <input 
+        type="submit" 
+        form="converter-form" 
+        class="button" 
+        id="submit-button" 
+        value="Submit" 
+        style="margin-left:auto;"
+    >
+
+    {% if python_output %}
+        <h3>Output</h3>
+        <textarea 
+            id="python-textarea" 
+            name="python_output" 
+            placeholder="Python code will appear here" 
+            readonly>{{ python_output }}</textarea>
     {% endif %}
+
+    <a href="{{ url_for('rules') }}" style="text-decoration: none;">
+        <button class="button">Rules</button>
+    </a>
 </body>
 </html>

@@ -3,22 +3,23 @@ from p2p import CodeBlock
 
 app = Flask(__name__)
 
-
 @app.route("/", methods=["GET", "POST"])
 def index():
-    i_p = ""
-    o_p = ""
+    pseudocode_input = ""
+    python_output = ""
     if request.method == "POST":
-        i_p = request.form.get("i_p")
-        if not i_p:
+        pseudocode_input = request.form.get("pseudocode_input")
+        if not pseudocode_input:
             return render_template("index.html")
         else:
-            c = CodeBlock(i_p.splitlines("\n"))
+            c = CodeBlock(pseudocode_input.splitlines("\n"))
             c.analyse()
-            o_p = "\n".join(c.o_p)
-    return render_template("index.html", i_p=i_p, o_p=o_p)
+            python_output = "\n".join(c.o_p)
+    return render_template("index.html", pseudocode_input=pseudocode_input, python_output=python_output)
 
-# maybe add a page that describes how to use the app, including specifications of the pseudocode requirements
+@app.route("/rules")
+def rules():
+    return render_template("rules.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
