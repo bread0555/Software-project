@@ -1,8 +1,10 @@
 class CodeBlock:
 
     def __init__(self, i_p):
-        self.i_p = i_p
-        self.o_p = []
+        self.i_p = i_p # i_p in this class represents the input (in pseudocode)
+        self.o_p = [] # o_p in this class represents the output (in python)
+        self.indent = "    "
+        self.indent_lvl = 0
 
     def tab_to_spaces(self):
         for i in range(len(self.i_p)):
@@ -11,8 +13,6 @@ class CodeBlock:
 
     def check_indents(self):
         if not self.i_p:
-            self.indent = "    "
-            self.indent_lvl = 0
             return
 
         indents = []
@@ -39,13 +39,14 @@ class CodeBlock:
     def analyse(self):
         self.tab_to_spaces()
         self.check_indents()
+        keywords = ["IF", "WHILE", "FOR", "TRY", "CASE", "REPEAT", "FUNCTION", "CASEWHERE"]
         i = 0
         self.i_p[:] = [line for line in self.i_p if line.strip()]
         while i < len(self.i_p):
             if (self.i_p[i].startswith(self.indent * self.indent_lvl)
                     and not self.i_p[i].startswith(self.indent *
                                                    (self.indent_lvl + 1))
-                    and self.i_p[i].upper().split()[0] not in ["IF", "WHILE", "FOR", "TRY", "CASE", "REPEAT", "FUNCTION", "CASEWHERE"]):
+                    and self.i_p[i].upper().split()[0] not in keywords):
                 action = self.i_p[i].upper().split()[0]
                 self.o_p.append(self.process_sequential_line(action, self.i_p[i]))
                 i += 1
@@ -415,6 +416,7 @@ class CodeBlock:
         operand = " ".join(i_p.split()[1:])
         operand = operand.split("TO")
         operand = [seq.strip() for seq in operand]
+        print(operand)
         o_p = self.indent * self.indent_lvl + operand[1] + ".append(" + operand[0] + ")"
         return o_p
 
@@ -432,14 +434,3 @@ class CodeBlock:
             else:
                 o_p = self.indent * self.indent_lvl + "return"
         return o_p
-
-
-pseudocode_lines = [
-    "FOR i = 1 TO 3",
-    "    PRINT 'Hello'",
-    "END FOR"
-]
-
-c = CodeBlock(pseudocode_lines)
-c.analyse()
-print(c.o_p)

@@ -1,0 +1,8 @@
+TRY
+    INPUT "Enter numerator:" numerator
+    INPUT "Enter denominator:" denominator
+    result = numerator / denominator
+    PRINT "Result is", result
+EXCEPT
+    PRINT "Error: Cannot divide by zero."
+END TRY
