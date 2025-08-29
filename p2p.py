@@ -68,11 +68,11 @@ class CodeBlock:
     
     def process_control_block(self, constructor, i_p):
         if constructor == "IF":
-            return self.transalte_if(i_p)
+            return self.translate_if(i_p)
         elif constructor == "TRY":
             return self.translate_try(i_p)
         elif constructor == "WHILE":
-            return self.translate_which(i_p)
+            return self.translate_while(i_p)
         elif constructor == "FOR":
             return self.translate_for(i_p)
         elif constructor == "CASEWHERE":
@@ -80,7 +80,7 @@ class CodeBlock:
         elif constructor == "REPEAT":
             return self.translate_repeat(i_p)
         elif constructor == "FUNCTION":
-            return self.translate_function(i_p)
+            return self.translate_function(i_p)    
 
     def translate_if(self, i_p):
         replacements = {
@@ -338,20 +338,22 @@ class CodeBlock:
         return o_p
     
     def process_sequential_line(self, action, i_p):
-        if action == "PRINT":
-            return self.translate_print(i_p)
-        elif action == "INPUT":
-            return self.translate_input(i_p)
-        elif action == "SET":
-            return self.translate_set(i_p)
-        elif action == "CALL":
-            return self.translate_call(i_p)
-        elif action == "APPEND":
-            return self.translate_append(i_p)
-        elif action in ["BREAK", "CONTINUE", "PASS", "RETURN"]:
-            return self.translate_control(i_p, action)
+        control_actions = ["BREAK", "CONTINUE", "PASS", "RETURN"]
+        translations = {
+            "PRINT": self.translate_print,
+            "INPUT": self.translate_input,
+            "SET": self.translate_set,
+            "CALL": self.translate_call,
+            "APPEND": self.translate_append
+        }
+    
+        if action in control_actions:
+            o_p = self.translate_control(i_p, action)
+        elif action in translations:
+            o_p = translations[action](i_p)
         else:
-            return i_p
+            o_p = i_p
+        return o_p
     
     def translate_print(self, i_p):
         operand = " ".join(i_p.split()[1:])

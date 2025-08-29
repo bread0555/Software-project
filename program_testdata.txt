@@ -1,0 +1,392 @@
+[1]
+
+TEST:
+
+IF x > 10 THEN
+    PRINT "Greater than 10"
+ELSE IF x = 10 THEN
+    PRINT "Exactly 10"
+ELSE
+    PRINT "Less than 10"
+END IF
+
+EXPECTED:
+
+if x > 10 :
+    print("Greater than 10")
+elif x == 10 :
+    print("Exactly 10")
+else:
+    print("Less than 10")
+
+[2]
+
+TEST:
+
+TRY
+    INPUT "Enter numerator:" numerator
+    INPUT "Enter denominator:" denominator
+    result = numerator / denominator
+    PRINT "Result is", result
+EXCEPT
+    PRINT "Error: Cannot divide by zero."
+END TRY
+
+EXPECTED:
+
+try:
+    numerator = input('Enter numerator:')
+    denominator = input('Enter denominator:')
+    result = numerator / denominator
+
+    print("Result is", result)
+except:
+    print("Error: Cannot divide by zero.")
+
+[3]
+
+TEST:
+
+WHILE count < 5
+    PRINT count
+    count = count + 1
+END WHILE
+
+EXPECTED:
+
+while count < 5:
+    print(count)
+    count = count + 1
+
+[4]
+
+TEST:
+
+FOR i = 1 TO 5
+    PRINT i
+END FOR
+
+EXPECTED:
+
+for i in range(1, 5):
+    print(i)
+
+[5]
+
+TEST:
+
+CASEWHERE x IS
+    1 : PRINT "One"
+    2 : PRINT "Two"
+    3 : PRINT "Three"
+    OTHERWISE : PRINT "Other"
+END CASEWHERE
+
+EXPECTED:
+
+if x == 1:
+    print("One")
+elif x == 2:
+    print("Two")
+elif x == 3:
+    print("Three")
+else:
+    print("Other")
+
+[6]
+
+TEST:
+
+SET x = 0
+REPEAT
+    PRINT x
+    SET x = x + 1
+UNTIL x = 5
+
+EXPECTED:
+
+x = 0
+while True:
+    print(x)
+    x = x + 1
+    if x = 5:
+        break
+
+[7]
+
+TEST:
+
+FUNCTION Add(a, b)
+    result = a + b
+    RETURN result
+END FUNCTION
+
+EXPECTED:
+
+def Add(a, b):
+    result = a + b
+    return result
+
+[8]
+
+TEST:
+
+PRINT “Hello world!”
+
+EXPECTED:
+
+print(“Hello world!”)
+
+[9]
+
+TEST:
+
+INPUT "What would you like today?" AS STRING preference
+
+EXPECTED:
+
+preference = str(input('What would you like today?'))
+
+[10]
+
+TEST:
+
+SET x = 5
+
+EXPECTED:
+
+x = 5
+
+[11]
+
+TEST:
+
+FUNCTION greet(name)
+    PRINT "Hello, " + name
+END FUNCTION
+
+CALL greet("Alice")
+
+EXPECTED:
+
+def greet(name):
+    print("Hello, " + name)
+greet("Alice")
+
+[12]
+
+TEST:
+
+SET list = []
+APPEND list TO 10
+APPEND list TO 20
+PRINT list
+
+EXPECTED:
+
+list = []
+10.append(list)
+20.append(list)
+print(list)
+
+[13]
+
+TEST:
+
+FUNCTION demoControl(n)
+    FOR i = 1 TO n
+        IF i = 2 THEN
+            CONTINUE
+        ELSE IF i = 3 THEN
+            PASS
+        ELSE IF i = 4 THEN
+            BREAK
+        ELSE IF i = 5 THEN
+            RETURN "Ended at 5"
+        END IF
+        PRINT i
+    END FOR
+END FUNCTION
+
+EXPECTED:
+
+def demoControl(n):
+    for i in range(1, n):
+        if i == 2:
+            continue
+        elif i == 3:
+            pass
+        elif i == 4:
+            break
+        elif i == 5:
+            return "Ended at 5"
+        print(i)
+
+[14]
+
+TEST:
+
+FUNCTION main()
+    SET numbers = []
+    INPUT "Enter how many numbers:" count
+
+    FOR i = 1 TO count
+        INPUT "Enter number:" num
+        APPEND numbers TO num
+    END FOR
+
+    PRINT "You entered:", numbers
+
+    CASEWHERE count IS
+        0 : PRINT "No numbers entered."
+        1 : PRINT "Only one number entered."
+        OTHERWISE : PRINT "Multiple numbers entered."
+    END CASEWHERE
+
+    SET x = 0
+    REPEAT
+        PRINT "Checking:", x
+        IF x = 2 THEN
+            PRINT "Skipping 2"
+            CONTINUE
+        ELSE IF x = 3 THEN
+            PASS
+        ELSE IF x = 4 THEN
+            BREAK
+        END IF
+        x = x + 1
+    UNTIL x = 6
+
+    TRY
+        INPUT "Enter numerator:" numerator
+        INPUT "Enter denominator:" denominator
+        result = numerator / denominator
+        PRINT "Result is", result
+    EXCEPT
+        PRINT "Error: Cannot divide by zero."
+    END TRY
+
+    CALL greet("Alice")
+    PRINT Add(5, 10)
+END FUNCTION
+
+FUNCTION greet(name)
+    PRINT "Hello, " + name
+END FUNCTION
+
+FUNCTION Add(a, b)
+    result = a + b
+    RETURN result
+END FUNCTION
+
+CALL main()
+
+EXPECTED:
+
+def main():
+    numbers = []
+    count = input('Enter how many numbers:')
+    for i in range(1, count):
+        num = input('Enter number:')
+        num.append(numbers)
+    print("You entered:", numbers)
+    if count == 0:
+        print("No numbers entered.")
+    elif count == 1:
+        print("Only one number entered.")
+    else:
+        print("Multiple numbers entered.")
+    x = 0
+    while True:
+        print("Checking:", x)
+        if x == 2:
+            print("Skipping 2")
+            continue
+        elif x == 3:
+            pass
+        elif x == 4:
+            break
+        x = x + 1
+        if x = 6:
+            break
+    try:
+        numerator = input('Enter numerator:')
+        denominator = input('Enter denominator:')
+        result = numerator / denominator
+
+        print("Result is", result)
+    except:
+        print("Error: Cannot divide by zero.")
+    greet("Alice")
+    print(Add(5, 10))
+def greet(name):
+    print("Hello, " + name)
+def Add(a, b):
+    result = a + b
+    return result
+main()
+
+[15]
+
+TEST:
+
+
+
+EXPECTED:
+
+alert to provide input
+
+[16]
+
+TEST:
+
+WHILE x < 10
+    PRINT x
+    x = x + 2
+
+EXPECTED:
+
+alert to provide valid pseudocode
+
+[17]
+
+TEST:
+
+SET = 10
+
+EXPECTED:
+
+alert to provide valid pseudocode
+
+[18]
+
+TEST:
+
+CALL
+
+EXPECTED:
+
+alert to provide valid pseudocode
+
+[19]
+
+TEST:
+
+FOR i 1 TO 10
+    PRINT i
+END FOR
+
+EXPECTED:
+
+alert to provide valid pseudocode
+
+[20]
+
+TEST:
+
+REPEAT
+    PRINT x
+
+EXPECTED:
+
+alert to provide valid pseudocode
