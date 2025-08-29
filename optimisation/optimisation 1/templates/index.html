@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css" />
+    <script>
+        function validateField(field) {
+            if (field.value.length === 0) {
+                alert("Please enter data in the " + field.name + " field");
+            }
+        }
+        document.addEventListener("keydown", function(event) {
+            if (event.metaKey && event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("submit-button").click();
+            }
+        });
+    </script>
+    <title>P2P Translater: Home</title>
+    <style>
+        input[type="submit"] {
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pseudocode to Python</h1>
+    <h3>Input</h3>
+
+    <form id="converter-form" onsubmit="validateField(this.pseudocode_input)" method="POST">
+        <textarea 
+            id="pseudocode-textarea" 
+            name="pseudocode_input" 
+            placeholder="Enter pseudocode here">{{ pseudocode_input }}</textarea>
+    </form>
+
+    <div style="display: flex;">
+        <button class="button" onclick="window.location.href='{{ url_for('rules') }}'">Rules</button>
+        <input 
+            type="submit" 
+            form="converter-form" 
+            class="button" 
+            id="submit-button" 
+            value="Submit" 
+            style="margin-left:auto;"
+        >
+    </div>
+
+    {% if python_output %}
+        <h3>Output</h3>
+        <textarea 
+            id="python-textarea" 
+            name="python_output" 
+            placeholder="Python code will appear here" 
+            readonly>{{ python_output }}</textarea>
+    {% endif %}
+
+    {% if error_message %}
+    <script>
+        alert("Error: {{ error_message }}.\n\nPlease check your pseudocode and try again. Refer to the rules page for guidance.");
+    </script>
+    {% endif %}
+
+</body>
+</html>

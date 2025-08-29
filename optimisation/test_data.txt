@@ -1,0 +1,63 @@
+SET a = 2
+SET b = 3
+SET c = a + b
+SET d = c * 5
+SET e = d - 4
+SET f = e / 2
+SET g = f + 7
+SET h = g * g
+PRINT "Result of h is " + h
+SET name = "Brandon"
+SET greeting = "Welcome, " + name
+PRINT greeting
+SET year = 2025
+PRINT "Current year: " + year
+SET next = year + 1
+PRINT "Next year will be: " + next
+
+
+FOR i = 1 TO 3
+    FOR j = 1 TO 2
+        IF (i + j) % 2 = 0 THEN
+            PRINT "Even pair: " + i + ", " + j
+        ELSE
+            PRINT "Odd pair: " + i + ", " + j
+        END IF
+    END FOR
+END FOR
+
+WHILE x < 50
+    IF x % 5 = 0 THEN
+        PRINT x + " is divisible by 5"
+    ELSE
+        PRINT x + " is not divisible by 5"
+    END IF
+    x = x + 7
+END WHILE
+
+SET sum = 0
+SET count = 4
+SET numbers = [3, 8, 15, 22]
+
+FOR i = 1 TO count
+    sum = sum + numbers[i]
+    IF numbers[i] % 2 = 0 THEN
+        PRINT numbers[i] + " is even"
+    ELSE
+        PRINT numbers[i] + " is odd"
+    END IF
+END FOR
+
+PRINT "Running total: " + sum
+
+IF sum > 30 THEN
+    PRINT "Sum is greater than 30"
+    WHILE sum > 10
+        PRINT "Reducing sum... " + sum
+        sum = sum - 10
+    END WHILE
+ELSE
+    PRINT "Sum is too small"
+END IF
+
+PRINT "Final result: " + sum
