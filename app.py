@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request
 from p2p import CodeBlock
-import time
 
 app = Flask(__name__)
 
@@ -16,11 +15,7 @@ def index():
         else:
             try:
                 c = CodeBlock(pseudocode_input.splitlines("\n"))
-                start_time = time.time()
                 c.analyse()
-                end_time = time.time()
-                elapsed_time = end_time - start_time
-                print(f"Analyse execution time: {elapsed_time:.6f} seconds")
                 python_output = "\n".join(c.o_p)
             except Exception as e:
                 error_message = str(e)
