@@ -57,5 +57,11 @@
             readonly>{{ python_output }}</textarea>
     {% endif %}
 
+    {% if error_message %}
+    <script>
+        alert("Error: {{ error_message }}.\n\nPlease check your pseudocode and try again. Refer to the rules page for guidance.");
+    </script>
+    {% endif %}
+
 </body>
 </html>
